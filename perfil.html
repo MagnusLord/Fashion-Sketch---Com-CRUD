@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FashionSketch - Perfil</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #e0c3fc;
+            --secondary-color: #ff69b4;
+            --text-color: #333;
+            --bg-color: #fff;
+            --header-bg: #f8e0ff;
+        }
+
+        .dark-mode {
+            --primary-color: #8a2be2;
+            --secondary-color: #ff1493;
+            --text-color: #f5f5f5;
+            --bg-color: #121212;
+            --header-bg: #2a0e35;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 100px;
+            width: 300px;
+        }
+
+        .header-buttons button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem; 
+            margin-left: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px; 
+            transition: background-color 0.3s, transform 0.3s; 
+        }
+
+        .header-buttons button:hover {
+            background-color: #ff85c0; 
+            transform: scale(1.05); 
+        }
+
+        main {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s ease-in; 
+        }
+
+        .profile-section {
+            background-color: var(--bg-color);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-out; 
+        }
+
+        h2 {
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 1rem;
+            position: relative;
+            border: 4px solid var(--secondary-color);
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-picture .edit-button {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .profile-picture .edit-button:hover {
+            background-color: #ff85c0; 
+            transform: scale(1.05); 
+        }
+
+        .profile-picture input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-details .read-only {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .profile-details .read-only p {
+            margin-bottom: 1rem;
+        }
+
+        .profile-details .editable {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .profile-details .editable input, .profile-details .editable textarea, .profile-details .editable select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: 5px;
+        }
+
+        .profile-details button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .profile-details button:hover {
+            background-color: #ff85c0; 
+            transform: scale(1.05); 
+        }
+
+        #themeToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="assets/images/logo.png" alt="FashionSketch Logo">
+        </div>
+        <div class="header-buttons">
+            <button id="homeBtn">Início</button>
+            <button id="galleryBtn">Galeria</button>
+            <button id="logoutBtn">Sair</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="profile-section">
+            <h2>Perfil do Usuário</h2>
+            <div class="profile-picture">
+                <img id="profileImage" src="assets/images/default-profile.png" alt="Foto de Perfil">
+                <button class="edit-button">✎</button>
+                <input type="file" id="profilePictureInput" accept="image/*">
+            </div>
+            <div class="profile-details">
+                <div class="read-only">
+                    <p id="usernameDisplay"></p>
+                    <p id="genderDisplay"></p>
+                    <p id="bioDisplay"></p>
+                    <p id="locationDisplay"></p>
+                    <p id="websiteDisplay"></p>
+                    <button id="editProfileBtn">Atualizar Dados</button>
+                </div>
+                <div class="editable">
+                    <input type="text" id="username" placeholder="Nome de Usuário">
+                    <select id="gender">
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Outro">Outro</option>
+                        <option value="Prefiro não dizer">Prefiro não dizer</option>
+                    </select>
+                    <textarea id="bio" placeholder="Biografia"></textarea>
+                    <input type="text" id="location" placeholder="Localização">
+                    <input type="text" id="website" placeholder="Website">
+                    <button id="saveProfile">Salvar Perfil</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <button id="themeToggle">🌙</button>
+
+    <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    themeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        themeToggle.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
+
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        body.classList.add('dark-mode');
+        themeToggle.textContent = '☀️';
+    }
+
+    const profilePictureInput = document.getElementById('profilePictureInput');
+    const profileImage = document.getElementById('profileImage');
+    const editButton = document.querySelector('.profile-picture .edit-button');
+
+    editButton.addEventListener('click', () => {
+        profilePictureInput.click();
+    });
+
+    profilePictureInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                profileImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    const saveProfileBtn = document.getElementById('saveProfile');
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const usernameInput = document.getElementById('username');
+    const genderInput = document.getElementById('gender');
+    const bioInput = document.getElementById('bio');
+    const locationInput = document.getElementById('location');
+    const websiteInput = document.getElementById('website');
+
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const genderDisplay = document.getElementById('genderDisplay');
+    const bioDisplay = document.getElementById('bioDisplay');
+    const locationDisplay = document.getElementById('locationDisplay');
+    const websiteDisplay = document.getElementById('websiteDisplay');
+
+    function displayProfileData(user) {
+        usernameDisplay.textContent = `Nome de Usuário: ${user.username || 'Não informado'}`;
+        genderDisplay.textContent = `Gênero: ${user.gender || 'Não informado'}`;
+        bioDisplay.textContent = `Biografia: ${user.bio || 'Não informado'}`;
+        locationDisplay.textContent = `Localização: ${user.location || 'Não informado'}`;
+        websiteDisplay.textContent = `Website: ${user.website || 'Não informado'}`;
+        profileImage.src = user.profile_image || 'assets/images/default-profile.png';
+    }
+
+    function toggleEditMode() {
+        const readOnly = document.querySelector('.profile-details .read-only');
+        const editable = document.querySelector('.profile-details .editable');
+
+        if (readOnly.style.display === 'none') {
+            readOnly.style.display = 'flex';
+            editable.style.display = 'none';
+        } else {
+            readOnly.style.display = 'none';
+            editable.style.display = 'flex';
+        }
+    }
+
+    function saveProfileData() {
+        const formData = new FormData();
+        formData.append('username', usernameInput.value);
+        formData.append('gender', genderInput.value);
+        formData.append('bio', bioInput.value);
+        formData.append('location', locationInput.value);
+        formData.append('website', websiteInput.value);
+        formData.append('profileImage', profileImage.src);
+
+        fetch('perfil.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Perfil salvo com sucesso!');
+                toggleEditMode();
+            } else {
+                alert('Erro ao salvar perfil.');
+            }
+        });
+    }
+
+    function loadProfileData() {
+        fetch('perfil.php')
+        .then(response => response.json())
+        .then(data => {
+            displayProfileData(data);
+        });
+    }
+
+    saveProfileBtn.addEventListener('click', saveProfileData);
+    editProfileBtn.addEventListener('click', () => {
+        loadProfileData();
+        toggleEditMode();
+    });
+
+    window.onload = loadProfileData;
+    </script>
+</body>
+</html>

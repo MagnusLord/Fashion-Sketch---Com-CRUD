@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FashionSketch - Login/Cadastro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #ff69b4;
+            --secondary-color: #e0c3fc;
+            --text-color: #333;
+            --bg-color: #fff;
+            --input-bg: #f5f5f5;
+        }
+
+        .dark-mode {
+            --primary-color: #ff69b4;
+            --secondary-color: #8a2be2;
+            --text-color: #f5f5f5;
+            --bg-color: #121212;
+            --input-bg: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            display: flex;
+            background: var(--bg-color);
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 1000px; 
+            height: 600px; 
+            overflow: hidden;
+            position: relative;
+        }
+
+        .left-panel {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 80px; 
+            width: 45%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .left-panel h1 {
+            font-size: 40px; 
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .form-wrapper {
+            padding: 80px; 
+            width: 55%; 
+        }
+
+        h2 {
+            font-size: 32px; 
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input {
+            padding: 15px; 
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 18px; 
+            background-color: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        button {
+            padding: 15px; 
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px; 
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .toggle {
+            margin-top: 20px; 
+            text-align: center;
+            color: var(--text-color);
+            font-size: 18px; 
+        }
+
+        .toggle a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>FashionSketch</h1>
+            <p>Sua plataforma de moda, onde criatividade e estilo se encontram.</p>
+        </div>
+        <div class="form-wrapper">
+            <h2 id="formTitle">Crie sua conta</h2>
+            <form id="authForm" method="POST" action="">
+                <input type="text" id="name" name="nome" placeholder="Nome" required>
+                <input type="email" id="email" name="email" placeholder="E-mail" required>
+                <input type="password" id="password" name="senha" placeholder="Senha" required>
+                <button type="submit" id="submitBtn">Cadastrar</button>
+            </form>
+            <div class="toggle">
+                <a href="#" id="toggleForm">Já tem uma conta? Faça login</a>
+            </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+
+    <script>
+        const authForm = document.getElementById('authForm');
+        const formTitle = document.getElementById('formTitle');
+        const toggleForm = document.getElementById('toggleForm');
+        const nameInput = document.getElementById('name');
+        const submitBtn = document.getElementById('submitBtn');
+        let isLogin = false;
+
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            themeToggle.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
+
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        }
+
+        function toggleFormMode() {
+            isLogin = !isLogin;
+            if (isLogin) {
+                formTitle.textContent = 'Faça login';
+                nameInput.style.display = 'none';
+                submitBtn.textContent = 'Entrar';
+            } else {
+                formTitle.textContent = 'Crie sua conta';
+                nameInput.style.display = 'block';
+                submitBtn.textContent = 'Cadastrar';
+            }
+            authForm.reset();
+        }
+
+        toggleForm.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleFormMode();
+        });
+
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (isLogin) {
+                const emailLogin = document.getElementById('email').value;
+                const senhaLogin = document.getElementById('password').value;
+
+                if (emailLogin !== "" && senhaLogin !== "") {
+                    // Enviar dados para o servidor PHP
+                    fetch('login.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `email=${emailLogin}&senha=${senhaLogin}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = 'telainicial.html';
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Erro ao tentar fazer login. Verifique o console para mais detalhes.');
+                    });
+                } else {
+                    alert("Por favor, preencha todos os campos");
+                }
+            } else {
+                const nome = nameInput.value;
+                const email = document.getElementById('email').value;
+                const senha = document.getElementById('password').value;
+
+                if (nome !== "" && email !== "" && senha !== "") {
+                    // Enviar dados para o servidor PHP
+                    fetch('cadastro.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `nome=${nome}&email=${email}&senha=${senha}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = 'telainicial.html';
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Erro ao tentar cadastrar. Verifique o console para mais detalhes.');
+                    });
+                } else {
+                    alert("Por favor, preencha todos os campos");
+                }
+            }
+        });
+
+        document.querySelector('.form-wrapper').style.animation = 'fadeIn 0.5s ease-out';
+    </script>
+</body>
+</html>

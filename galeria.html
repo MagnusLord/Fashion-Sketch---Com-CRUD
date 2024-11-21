@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FashionSketch - Galeria</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #e0c3fc;
+            --secondary-color: #ff69b4;
+            --text-color: #333;
+            --bg-color: #fff;
+            --header-bg: #f8e0ff;
+        }
+
+        .dark-mode {
+            --primary-color: #8a2be2;
+            --secondary-color: #ff1493;
+            --text-color: #f5f5f5;
+            --bg-color: #121212;
+            --header-bg: #2a0e35;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 100px;
+            width: 300px;
+        }
+
+        .header-buttons button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            margin-left: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .header-buttons button:hover {
+            background-color: #ff85c0;
+            transform: scale(1.05);
+        }
+
+        main {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .art-card {
+            background-color: var(--bg-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .art-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .art-details {
+            padding: 1rem;
+        }
+
+        .art-details h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .art-details p {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .delete-btn, .edit-btn, .download-btn {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-btn {
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 0, 0, 0.7);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(255, 0, 0, 0.9);
+        }
+
+        .edit-btn {
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 128, 0, 0.7);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: rgba(0, 128, 0, 0.9);
+        }
+
+        .download-btn {
+            bottom: 10px;
+            right: 50px;
+            background-color: rgba(0, 0, 255, 0.7);
+            color: white;
+        }
+
+        .download-btn:hover {
+            background-color: rgba(0, 0, 255, 0.9);
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+        }
+
+        .search-bar button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #ff85c0;
+        }
+
+        #themeToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .no-arts-message {
+            text-align: center;
+            font-size: 24px;
+            color: var(--text-color);
+            margin-top: 50px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            max-height: 80%;
+            animation: zoom 0.6s;
+        }
+
+        @keyframes zoom {
+            from {transform:scale(0)}
+            to {transform:scale(1)}
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="assets/images/logo.png" alt="FashionSketch Logo">
+        </div>
+        <div class="header-buttons">
+            <button id="homeBtn">Início</button>
+            <button id="profileBtn">Perfil</button>
+            <button id="logoutBtn">Sair</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Buscar por nome">
+            <button id="searchBtn">Buscar</button>
+        </div>
+
+        <div class="gallery" id="galleryContainer">
+           
+        </div>
+    </main>
+
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <button id="themeToggle">🌙</button>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const galleryContainer = document.getElementById('galleryContainer');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const closeModal = document.querySelector('.close');
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            themeToggle.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            localStorage.setItem('darkMode', body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
+        });
+
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        }
+
+        // Função para renderizar a galeria
+        function renderArtGallery() {
+            galleryContainer.innerHTML = '';
+            fetchGalleryItems().then(itens => {
+                if (itens.length === 0) {
+                    const noArtsMessage = document.createElement('div');
+                    noArtsMessage.classList.add('no-arts-message');
+                    noArtsMessage.textContent = '✨ Não há artes salvas ainda. Que tal criar uma obra-prima? ✨';
+                    galleryContainer.appendChild(noArtsMessage);
+                    return;
+                }
+
+                itens.forEach(art => {
+                    const artCard = createArtCard(art);
+                    galleryContainer.appendChild(artCard);
+                });
+            });
+        }
+
+        // Buscar itens da galeria do banco de dados
+        function fetchGalleryItems() {
+            return new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "galeria.php?acao=buscar", true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var itens = JSON.parse(xhr.responseText);
+                        resolve(itens);
+                    }
+                };
+                xhr.send();
+            });
+        }
+
+        // Salvar um novo item da galeria
+        function saveArtToGallery(dataURL, nome, descricao) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "galeria.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.sucesso) {
+                        alert('Desenho salvo na galeria com ID: ' + response.id);
+                        renderArtGallery();
+                    } else {
+                        alert('Erro ao salvar desenho: ' + response.erro);
+                    }
+                }
+            };
+            var data = "acao=salvar&nome=" + encodeURIComponent(nome) + "&imagemData=" + encodeURIComponent(dataURL) + "&descricao=" + encodeURIComponent(descricao);
+            xhr.send(data);
+        }
+
+        // Excluir um item da galeria pelo ID
+        function deleteArt(id) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "galeria.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.sucesso) {
+                        alert('Arte excluída com sucesso.');
+                        renderArtGallery();
+                    } else {
+                        alert('Erro ao excluir arte: ' + response.erro);
+                    }
+                }
+            };
+            var data = "acao=excluir&id=" + id;
+            xhr.send(data);
+        }
+
+        // Atualizar o nome e a descrição de um item da galeria pelo ID
+        function updateArt(id, nome, descricao) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "galeria.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.sucesso) {
+                        alert('Arte atualizada com sucesso.');
+                        renderArtGallery();
+                    } else {
+                        alert('Erro ao atualizar arte: ' + response.erro);
+                    }
+                }
+            };
+            var data = "acao=atualizar&id=" + id + "&nome=" + encodeURIComponent(nome) + "&descricao=" + encodeURIComponent(descricao);
+            xhr.send(data);
+        }
+
+        // Criar um cartão de arte
+        function createArtCard(art) {
+            const artCard = document.createElement('div');
+            artCard.classList.add('art-card');
+
+            const artImage = document.createElement('img');
+            artImage.src = art.imagem;
+            artImage.alt = art.nome;
+            artImage.addEventListener('click', () => {
+                modal.style.display = "block";
+                modalImg.src = art.imagem;
+            });
+
+            const artDetails = document.createElement('div');
+            artDetails.classList.add('art-details');
+
+            const artName = document.createElement('h3');
+            artName.textContent = art.nome;
+
+            const artDescription = document.createElement('p');
+            artDescription.textContent = art.descricao ? art.descricao : 'Não há uma descrição';
+
+            const artCreatedAt = document.createElement('p');
+            artCreatedAt.textContent = `Criado em: ${new Date(art.criadoEm).toLocaleDateString()}`;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('delete-btn');
+            deleteBtn.textContent = '🗑️';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (confirm('Tem certeza que deseja excluir esta arte?')) {
+                    deleteArt(art.id);
+                }
+            });
+
+            const editBtn = document.createElement('button');
+            editBtn.classList.add('edit-btn');
+            editBtn.textContent = '✏️';
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const novoNome = prompt('Novo nome:', art.nome);
+                if (novoNome !== null) {
+                    const novaDescricao = prompt('Nova descrição (opcional):', art.descricao || '');
+                    updateArt(art.id, novoNome, novaDescricao);
+                }
+            });
+
+            const downloadBtn = document.createElement('button');
+            downloadBtn.classList.add('download-btn');
+            downloadBtn.textContent = '⬇️';
+            downloadBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                downloadImage(art.imagem, art.nome);
+            });
+
+            artDetails.appendChild(artName);
+            artDetails.appendChild(artDescription);
+            artDetails.appendChild(artCreatedAt);
+
+            artCard.appendChild(artImage);
+            artCard.appendChild(artDetails);
+            artCard.appendChild(deleteBtn);
+            artCard.appendChild(editBtn);
+            artCard.appendChild(downloadBtn);
+
+            return artCard;
+        }
+
+        // Função para baixar a imagem
+        function downloadImage(imageSrc, fileName) {
+            const link = document.createElement('a');
+            link.href = imageSrc;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Evento de clique no botão de busca
+        searchBtn.addEventListener('click', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            fetchGalleryItems().then(itens => {
+                const filteredArts = itens.filter(art => art.nome.toLowerCase().includes(searchTerm));
+
+                galleryContainer.innerHTML = '';
+                if (filteredArts.length === 0) {
+                    const noResultsMessage = document.createElement('div');
+                    noResultsMessage.classList.add('no-arts-message');
+                    noResultsMessage.textContent = '😔 Nenhuma arte encontrada com esse nome.';
+                    galleryContainer.appendChild(noResultsMessage);
+                } else {
+                    filteredArts.forEach(art => {
+                        const artCard = createArtCard(art);
+                        galleryContainer.appendChild(artCard);
+                    });
+                }
+            });
+        });
+
+        // Evento de clique no botão de início
+        homeBtn.addEventListener('click', () => {
+            window.location.href = 'telainicial.html';
+        });
+
+        // Evento de clique no botão de perfil
+        document.getElementById('profileBtn').addEventListener('click', () => {
+            window.location.href = 'perfil.html';
+        });
+
+        // Evento de clique no botão de sair
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // Evento de clique no botão de fechar modal
+        closeModal.addEventListener('click', () => {
+            modal.style.display = "none";
+        });
+
+        // Evento de clique fora do modal para fechá-lo
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+
+        // Renderizar a galeria ao carregar a página
+        renderArtGallery();
+    </script>
+</body>
+</html>
